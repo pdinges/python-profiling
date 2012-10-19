@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 # Copyright (c) 2010--2012  Peter Dinges <pdinges@acm.org>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -32,7 +33,6 @@ and grouping of the data.
 __doc__ = __description
 
 
-import callgraph_operations 
 from contextlib import closing
 import sys
 
@@ -41,17 +41,7 @@ def main(arguments):
     
     output = get_output( arguments[0], options )
     callgraph = get_callgraph( arguments )
-    
-    #- Merge ------------------------------------------------------------------ 
-    if not options.preserve_wrappers:
-        callgraph_operations.merge_casting_wrappers( callgraph )
-    
-    if options.merge_divpolys:
-        callgraph_operations.merge_by_division_polynomials( callgraph )
-    
-    if options.merge_fields:
-        callgraph_operations.merge_by_fields( callgraph )
-    
+        
     #- Output -----------------------------------------------------------------
     try:    
         with closing( output ):
@@ -151,31 +141,6 @@ def parse_arguments( arguments ):
                         action="store_true",
                         default=False,
                         help="Overwrite the output file if it already exists."
-                   )
-
-    parser.add_option( "-c",
-                       "--preserve-wrappers",
-                       dest="preserve_wrappers",
-                       action="store_true",
-                       default=False,
-                       help="Preserve casting wrappers instead of merging "
-                       "them with the wrapped function"
-                   )
-    parser.add_option( "-d",
-                       "--merge-division-polynomials",
-                       dest="merge_divpolys",
-                       action="store_true",
-                       default=False,
-                       help="Merge namespaces with division polynomials into "
-                       "a generic namespace"
-                   )
-    parser.add_option( "-f",
-                       "--merge-fields",
-                       dest="merge_fields",
-                       action="store_true",
-                       default=False,
-                       help="Merge namespaces of fields with different element "
-                       "count into a generic namespace"
                    )
     
     options, arguments = parser.parse_args( arguments )
