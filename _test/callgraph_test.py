@@ -43,12 +43,12 @@ class CallGraphTest(unittest.TestCase):
         callgraph_functions = set( [
             (f.filename(), f.line_number(), f.name()) for f in self._callgraph
          ] )
-        self.assert_( callgraph_functions == set( self._stats.stats.keys() ) )
+        self.assertTrue( callgraph_functions == set( self._stats.stats.keys() ) )
         
     def test_fln_index(self):
         """Function access by (filename, line number, name) triple"""
         for fln in self._name_to_fln.values():
-            self.assert_( self._callgraph.function( fln ) ) 
+            self.assertTrue( self._callgraph.function( fln ) ) 
 
 
     #- Adding and Removing Nodes ---------------------------------------------- 
@@ -86,10 +86,10 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.add( self._stats )
         
-        self.assert_( function_f.primitive_callcount() == 2 * f_pccount )
-        self.assert_( function_f.total_callcount() == 2 * f_tccount )
-        self.assert_( function_k.primitive_callcount() == 2 * k_pccount )
-        self.assert_( function_k.total_callcount() == 2 * k_tccount )
+        self.assertTrue( function_f.primitive_callcount() == 2 * f_pccount )
+        self.assertTrue( function_f.total_callcount() == 2 * f_tccount )
+        self.assertTrue( function_k.primitive_callcount() == 2 * k_pccount )
+        self.assertTrue( function_k.total_callcount() == 2 * k_tccount )
     
     def test_add_calls_merges(self):
         """Adding parallel Calls"""
@@ -99,8 +99,8 @@ class CallGraphTest(unittest.TestCase):
         # The profile of the added call is arbitrary and of no importance.
         self._callgraph._add_call( function_f, function_g, 2, 2, 0.1, 0.1 )
         
-        self.assert_( len( function_f.outgoing_calls() ) == 1 )
-        self.assert_( len( function_g.incoming_calls() ) == 1 )
+        self.assertTrue( len( function_f.outgoing_calls() ) == 1 )
+        self.assertTrue( len( function_g.incoming_calls() ) == 1 )
         
     
     def test_remove_calls(self):
@@ -112,15 +112,15 @@ class CallGraphTest(unittest.TestCase):
         for call in calls:
             self._callgraph._remove_call( call )
         
-        self.assert_( not function_k.incoming_calls() )
+        self.assertTrue( not function_k.incoming_calls() )
         for caller in callers:
-            self.assert_( not calls.intersection( caller.outgoing_calls() ) )
+            self.assertTrue( not calls.intersection( caller.outgoing_calls() ) )
 
     def test_remove_function(self):
         """Remove Functions"""
         function_k = self._callgraph.function( self._name_to_fln["k"] )
         self._callgraph._remove_function( function_k )
-        self.assert_( function_k not in self._callgraph )
+        self.assertTrue( function_k not in self._callgraph )
 
     
     #- Nodes in General -------------------------------------------------------
@@ -141,13 +141,13 @@ class CallGraphTest(unittest.TestCase):
     #- Namespaces -------------------------------------------------------------
     def test_namespace_global_only(self):
         """Namespaces: have global namespace only"""
-        self.assert_( list( self._callgraph.namespaces() ) == [""] )
+        self.assertTrue( list( self._callgraph.namespaces() ) == [""] )
         
     def test_namespace_global_functions(self):
         """Namespaces: list of functions in global namespace"""
         stats_functions = [ fln[2] for fln in self._stats.stats.keys() ]
         callgraph_functions = [ f.name() for f in self._callgraph.namespace("") ]
-        self.assert_( set( stats_functions ) == set( callgraph_functions ) )
+        self.assertTrue( set( stats_functions ) == set( callgraph_functions ) )
     
     # TODO Add test cases for functions in proper namespaces.
     
@@ -163,7 +163,7 @@ class CallGraphTest(unittest.TestCase):
         """Treating functions as built-in removes them from the graph"""
         function_l = self._callgraph.function( self._name_to_fln["l"] )
         self._callgraph.treat_as_builtin( function_l )
-        self.assert_( function_l not in self._callgraph )
+        self.assertTrue( function_l not in self._callgraph )
 
     def test_builtin_removes_outgoing_calls(self):
         """Treating functions as built-in removes calls from callers"""
@@ -175,10 +175,10 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_builtin( function_l )
         
-        self.assert_( function_l not in function_h.callees() )
-        self.assert_( not l_callees.intersection( function_h.callees() ) )
-        self.assert_( function_l not in function_k.callees() )
-        self.assert_( not l_callees.intersection( function_k.callees() ) )
+        self.assertTrue( function_l not in function_h.callees() )
+        self.assertTrue( not l_callees.intersection( function_h.callees() ) )
+        self.assertTrue( function_l not in function_k.callees() )
+        self.assertTrue( not l_callees.intersection( function_k.callees() ) )
 
     def test_builtin_adds_inline_times(self):
         """Treating functions as built-in adds execution time to callers"""
@@ -207,7 +207,7 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_builtin( function_l )
         
-        self.assert_( function_k.cumulative_time() == k_ctime )
+        self.assertTrue( function_k.cumulative_time() == k_ctime )
 
     def test_builtin_preserves_caller_callcounts(self):
         """Treating functions as built-in preserves call counts of callers"""
@@ -219,8 +219,8 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_builtin( function_l )
         
-        self.assert_( function_k.primitive_callcount() == k_pccount )
-        self.assert_( function_k.total_callcount() == k_tccount )
+        self.assertTrue( function_k.primitive_callcount() == k_pccount )
+        self.assertTrue( function_k.total_callcount() == k_tccount )
 
     def test_builtin_preserves_callee_callcounts(self):
         """Treating functions as built-in preserves call counts of callees"""
@@ -232,8 +232,8 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_builtin( function_k )
         
-        self.assert_( function_l.primitive_callcount() == l_pccount )
-        self.assert_( function_l.total_callcount() == l_tccount )
+        self.assertTrue( function_l.primitive_callcount() == l_pccount )
+        self.assertTrue( function_l.total_callcount() == l_tccount )
     
     
     #- Function Operation: Treating as Inlined --------------------------------
@@ -241,7 +241,7 @@ class CallGraphTest(unittest.TestCase):
         """Treating functions as inlined removes them from the graph"""
         function_g = self._callgraph.function( self._name_to_fln["g"] )
         self._callgraph.treat_as_inlined( function_g )
-        self.assert_( function_g not in self._callgraph )
+        self.assertTrue( function_g not in self._callgraph )
     
     def test_inline_removes_incoming_calls(self):
         """Treating functions as inlined removes their incoming calls"""
@@ -251,7 +251,7 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_inlined( function_g )
         
-        self.assert_( not icalls.intersection( function_f.outgoing_calls() ) )
+        self.assertTrue( not icalls.intersection( function_f.outgoing_calls() ) )
 
     def test_inline_merges_outgoing_calls(self):
         """Treating functions as inlined merges their outgoing calls"""
@@ -261,7 +261,7 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_inlined( function_g )
         
-        self.assert_( g_callees.issubset( function_f.callees() ) )
+        self.assertTrue( g_callees.issubset( function_f.callees() ) )
     
     def test_inline_preserves_callcounts(self):
         """Treating functions as inlined preserves the call counts"""
@@ -273,8 +273,8 @@ class CallGraphTest(unittest.TestCase):
 
         self._callgraph.treat_as_inlined( function_g )
         
-        self.assert_( function_f.primitive_callcount() == f_pcalls )
-        self.assert_( function_f.total_callcount() == f_tcalls )
+        self.assertTrue( function_f.primitive_callcount() == f_pcalls )
+        self.assertTrue( function_f.total_callcount() == f_tcalls )
     
     def test_inline_preserves_times(self):
         """Treating functions as inlined preserves the timings"""
@@ -301,15 +301,15 @@ class CallGraphTest(unittest.TestCase):
         
         self._callgraph.treat_as_same( function_h, function_k )
         
-        self.assert_( function_h not in self._callgraph )
-        self.assert_( function_k not in self._callgraph )
+        self.assertTrue( function_h not in self._callgraph )
+        self.assertTrue( function_k not in self._callgraph )
         
     def test_merge_adds_function(self):
         """Merging functions adds a new function"""
         function_h = self._callgraph.function( self._name_to_fln["h"] )
         function_k = self._callgraph.function( self._name_to_fln["k"] )
         merged = self._callgraph.treat_as_same( function_h, function_k )
-        self.assert_( merged in self._callgraph )
+        self.assertTrue( merged in self._callgraph )
     
     def test_merge_unifies_incoming_calls(self):
         """Merging functions unifies their incoming calls"""
@@ -319,8 +319,8 @@ class CallGraphTest(unittest.TestCase):
         
         merged = self._callgraph.treat_as_same( function_h, function_k )
         
-        self.assert_( len( function_l.callers() ) == 1 )
-        self.assert_( function_l.callers().pop() == merged )
+        self.assertTrue( len( function_l.callers() ) == 1 )
+        self.assertTrue( function_l.callers().pop() == merged )
     
     def test_merge_unifies_outgoing_calls(self):
         """Merging functions unifies their outgoing calls"""
@@ -330,8 +330,8 @@ class CallGraphTest(unittest.TestCase):
         
         merged = self._callgraph.treat_as_same( function_h, function_k )
         
-        self.assert_( len( merged.callees() ) == 1 )
-        self.assert_( merged.callees().pop() == function_l )
+        self.assertTrue( len( merged.callees() ) == 1 )
+        self.assertTrue( merged.callees().pop() == function_l )
     
     def test_merge_adds_inline_times(self):
         """Merging functions adds up their inline execution times"""
@@ -379,7 +379,7 @@ class CallGraphTest(unittest.TestCase):
 
         merged = self._callgraph.treat_as_same( function_f, function_g )
 
-        self.assert_( merged.primitive_callcount() == f_pccount + g_pccount )
+        self.assertTrue( merged.primitive_callcount() == f_pccount + g_pccount )
     
     def test_merge_adds_total_callcount_offsets(self):
         """Merging functions adds up their total call count offsets"""
@@ -391,7 +391,7 @@ class CallGraphTest(unittest.TestCase):
 
         merged = self._callgraph.treat_as_same( function_f, function_g )
 
-        self.assert_( merged.total_callcount() == f_tccount + g_tccount )
+        self.assertTrue( merged.total_callcount() == f_tccount + g_tccount )
     
      
     #- Auxiliary Methods for the Test Cases -----------------------------------
