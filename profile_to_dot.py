@@ -166,7 +166,7 @@ def get_output( first_profile_name, options ):
         
     elif not options.output_name:
         base_name = os.path.splitext( os.path.basename( first_profile_name ) )[0]
-        file_name = "{0}.tex".format( base_name )
+        file_name = "{0}.dot".format( base_name )
         directory = os.path.dirname( first_profile_name )
         options.output_name = os.path.join( directory, file_name) 
         
